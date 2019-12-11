@@ -2,9 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
@@ -12,8 +13,10 @@ import (
 
 // Keystore of the API key values
 type Keystore struct {
-	APIKey       string `json:"apiKey"`
-	APISecretKey string `json:"apiSecretKey"`
+	ConsumerKey    string `json:"consumerKey"`
+	ConsumerSecret string `json:"consumerSecret"`
+	AccessToken    string `json:"accessToken"`
+	AccessSecret   string `json:"accessSecret"`
 }
 
 var keystore Keystore
@@ -21,11 +24,12 @@ var keystore Keystore
 // Authenticating with the twitter web client
 func auth() *twitter.Client {
 	getKeys()
-	config := oauth1.NewConfig("consumerKey", keystore.APIKey)
-	token := oauth1.NewToken("accessToken", keystore.APISecretKey)
+	config := oauth1.NewConfig(keystore.ConsumerKey, keystore.ConsumerSecret)
+	token := oauth1.NewToken(keystore.AccessToken, keystore.AccessSecret)
 	httpClient := config.Client(oauth1.NoContext, token)
 	client := twitter.NewClient(httpClient)
-	fmt.Println("Authenticated & Connected.......")
+
+	log.Info("Authenticated & Connected.......")
 
 	return client
 }
@@ -35,8 +39,10 @@ func getKeys() {
 	// Reading keystore file, if not available read from environment variables
 	jsonFile, err := os.Open("keys.json")
 	if err != nil {
-		keystore.APIKey = os.Getenv("API_KEY")
-		keystore.APISecretKey = os.Getenv("API_SECRET_KEY")
+		keystore.ConsumerKey = os.Getenv("consumerKey")
+		keystore.ConsumerSecret = os.Getenv("consumerSecret")
+		keystore.AccessToken = os.Getenv("accessToken")
+		keystore.AccessSecret = os.Getenv("accessSecret")
 		return
 	} else {
 		byteValue, _ := ioutil.ReadAll(jsonFile)
@@ -44,6 +50,6 @@ func getKeys() {
 	}
 	defer jsonFile.Close()
 
-	fmt.Println("Retrieved Keys.......")
+	log.Info("Retrieved Keys.......")
 
 }
