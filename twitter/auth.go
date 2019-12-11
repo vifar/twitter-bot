@@ -29,6 +29,13 @@ func auth() *twitter.Client {
 	httpClient := config.Client(oauth1.NoContext, token)
 	client := twitter.NewClient(httpClient)
 
+	// verify := &twitter.AccountVerifyParams{
+	// 	SkipStatus:   twitter.Bool(true),
+	// 	IncludeEmail: twitter.Bool(true),
+	// }
+	// user, _, _ := client.Accounts.VerifyCredentials(verify)
+	// log.Info("User's Account:", user)
+
 	log.Info("Authenticated & Connected.......")
 
 	return client
