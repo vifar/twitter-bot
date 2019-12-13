@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -46,11 +45,10 @@ func getKeys() {
 		keystore.AccessSecret = os.Getenv("accessSecret")
 		return
 	}
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	json.Unmarshal(byteValue, &keystore)
-
 	defer jsonFile.Close()
+
+	decoder := json.NewDecoder(jsonFile)
+	err = decoder.Decode(&keystore)
 
 	log.Info("Retrieved Keys.......")
 

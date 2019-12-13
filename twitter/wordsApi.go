@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
@@ -10,16 +9,16 @@ import (
 
 // RandomWord is the reutrn obect for the getRandomWord api
 type RandomWord struct {
-	word    string
-	results []Results
+	Word    string    `json:"word"`
+	Results []Results `json:"results"`
 }
 
 // Results is an array within RandomWord
 type Results struct {
-	definition   string
-	partOfSpeech string
-	synonyms     []string
-	typeOf       []string
+	Definition   string   `json:"definition"`
+	PartOfSpeech string   `json:"partOfSpeech"`
+	Synonyms     []string `json:"synonyms"`
+	TypeOf       []string `json:"typeOf"`
 }
 
 var randomWord RandomWord
@@ -41,13 +40,12 @@ func getRandomWord() {
 	}
 	defer res.Body.Close()
 
-	log.Info(res.Body)
-	byteValue, _ := ioutil.ReadAll(res.Body)
-	err = json.Unmarshal(byteValue, &randomWord)
+	decoder := json.NewDecoder(res.Body)
+	err = decoder.Decode(&randomWord)
 	if err != nil {
 		log.Errorln(nil)
 	}
 
-	log.Info("Received Random Word -->", randomWord)
+	log.Info("Received Random Word -->", randomWord.Word, randomWord.Results)
 
 }
