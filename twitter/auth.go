@@ -17,6 +17,7 @@ type Keystore struct {
 	ConsumerSecret string `json:"consumerSecret"`
 	AccessToken    string `json:"accessToken"`
 	AccessSecret   string `json:"accessSecret"`
+	WordsAPIKey    string `json:"wordsApiKey"`
 }
 
 var keystore Keystore
@@ -28,13 +29,6 @@ func auth() *twitter.Client {
 	token := oauth1.NewToken(keystore.AccessToken, keystore.AccessSecret)
 	httpClient := config.Client(oauth1.NoContext, token)
 	client := twitter.NewClient(httpClient)
-
-	// verify := &twitter.AccountVerifyParams{
-	// 	SkipStatus:   twitter.Bool(true),
-	// 	IncludeEmail: twitter.Bool(true),
-	// }
-	// user, _, _ := client.Accounts.VerifyCredentials(verify)
-	// log.Info("User's Account:", user)
 
 	log.Info("Authenticated & Connected.......")
 
@@ -51,10 +45,11 @@ func getKeys() {
 		keystore.AccessToken = os.Getenv("accessToken")
 		keystore.AccessSecret = os.Getenv("accessSecret")
 		return
-	} else {
-		byteValue, _ := ioutil.ReadAll(jsonFile)
-		json.Unmarshal(byteValue, &keystore)
 	}
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	json.Unmarshal(byteValue, &keystore)
+
 	defer jsonFile.Close()
 
 	log.Info("Retrieved Keys.......")

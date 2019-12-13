@@ -22,9 +22,16 @@ func main() {
 		fmt.Println(tweet.Text)
 	}
 
+	getRandomWord()
+	// Send a Tweet
+	// _, _, err := client.Statuses.Update("just setting up my twttr", nil)
+	// if err != nil {
+	// 	log.Error(err)
+	// }
+
 	// FILTER
 	filterParams := &twitter.StreamFilterParams{
-		Track:         []string{"future", "goat"},
+		Track:         []string{"@Future"},
 		StallWarnings: twitter.Bool(true),
 	}
 	stream, err := client.Streams.Filter(filterParams)
@@ -40,4 +47,5 @@ func main() {
 
 	fmt.Println("Stopping Stream...")
 	stream.Stop()
+
 }
