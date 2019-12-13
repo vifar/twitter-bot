@@ -2,50 +2,74 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/dghubble/go-twitter/twitter"
 	log "github.com/sirupsen/logrus"
 )
 
+const dots = '⋮'
+
+var count = 1
+
 func main() {
 	log.SetFormatter(&log.TextFormatter{})
-
 	log.Info("Retrieving Keys.......")
 
 	client := auth()
 
-	demux := twitter.NewSwitchDemux()
-	demux.Tweet = func(tweet *twitter.Tweet) {
-		fmt.Println(tweet.Text)
-	}
+	// Get current Date & Time
+	localTime, _ := time.LoadLocation("UTC")
+	now := time.Now().In(localTime)
+	log.Infoln("Today is: ", localTime, " & the time is: ", now)
 
-	getRandomWord()
-	// Send a Tweet
-	// _, _, err := client.Statuses.Update("just setting up my twttr", nil)
-	// if err != nil {
-	// 	log.Error(err)
-	// }
+	// Years to do calculations with
+	currentYear := now.Year()
+	nextYear := currentYear + 1
+	decadeEnd := int(math.Round(float64(currentYear)/10) * 10)
 
-	// FILTER
-	filterParams := &twitter.StreamFilterParams{
-		Track:         []string{"@Future"},
-		StallWarnings: twitter.Bool(true),
-	}
-	stream, err := client.Streams.Filter(filterParams)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	go demux.HandleChan(stream.Messages)
+	ticker := time.NewTicker(5 * time.Second)
+	quit := make(chan struct{})
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				calcYearCompleted(currentYear, nextYear, client)
+				calcDecadeCompleted(currentYear, decadeEnd, client)
+			case <-quit:
+				log.Info("Retrieving Keys.......")
+				return
+			}
+		}
+	}()
+	defer ticker.Stop()
 
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	log.Println(<-ch)
+}
 
-	fmt.Println("Stopping Stream...")
-	stream.Stop()
+func sendTweet(status string, percent int) {
+	tweet := fmt.Sprintf("%s - %d%", status, percent)
+	//Send a Tweet
+	_, _, err := client.Statuses.Update(tweet, nil)
+	if err != nil {
+		log.Error(err)
+	}
+}
+
+func calcYearCompleted(currentYear int, nextYear int, client *twitter.Client) {
+
+	// sendTweet(client)
+
+}
+
+func calcDecadeCompleted(currentYear int, decadeEnd int, client *twitter.Client) {
+
+	// sendTweet(client)
 
 }
