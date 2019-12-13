@@ -39,6 +39,5 @@ func main() {
 	log.Println(<-ch)
 
 	fmt.Println("Stopping Stream...")
-
 	stream.Stop()
 }
