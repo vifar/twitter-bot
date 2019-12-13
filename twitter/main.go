@@ -14,6 +14,7 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{})
 
 	log.Info("Retrieving Keys.......")
+	
 	client := auth()
 
 	demux := twitter.NewSwitchDemux()
