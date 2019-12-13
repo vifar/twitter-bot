@@ -14,7 +14,7 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{})
 
 	log.Info("Retrieving Keys.......")
-	
+
 	client := auth()
 
 	demux := twitter.NewSwitchDemux()
@@ -39,5 +39,6 @@ func main() {
 	log.Println(<-ch)
 
 	fmt.Println("Stopping Stream...")
+
 	stream.Stop()
 }
