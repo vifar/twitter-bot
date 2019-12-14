@@ -1,11 +1,9 @@
 module github.com/twitter-bot
 
-go 1.13
+go 1.12
 
 require (
-	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/dghubble/go-twitter v0.0.0-20190719072343-39e5462e111f
 	github.com/dghubble/oauth1 v0.6.0
 	github.com/sirupsen/logrus v1.4.2
-	golang.org/x/sys v0.0.0-20191210023423-ac6580df4449 // indirect
 )

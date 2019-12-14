@@ -1,2 +1,4 @@
-keys.json
+.env
+.docker_build/
 bin/
+keys.json
