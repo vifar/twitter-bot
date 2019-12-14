@@ -51,5 +51,9 @@
 			"revisionTime": "2019-12-09T02:16:22Z"
 		}
 	],
-	"rootPath": "github.com/twitter-bot"
+	"rootPath": "github.com/twitter-bot",
+	"heroku": {
+		"install": ["./..."],
+		"goVersion": "go1.13.5"
+	}
 }
