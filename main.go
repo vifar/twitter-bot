@@ -17,12 +17,9 @@ const completed = "█"
 const daysInYear = 365
 const daysInLeapYear = 366
 
-<<<<<<< HEAD
-=======
 var yearProgress = 0
 var decadeProgress = 0
 
->>>>>>> master
 func main() {
 	log.SetFormatter(&log.TextFormatter{})
 	log.Info("Retrieving Keys.......")
