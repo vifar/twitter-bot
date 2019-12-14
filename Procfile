@@ -1,3 +1,3 @@
 web: 
-	twitter/main 
-	twitter/auth
+	main 
+	auth
