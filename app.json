@@ -1,0 +1,10 @@
+{
+  "name": "Start on Heroku: Go",
+  "description": "Twitter Bot",
+  "keywords": [
+    "twitter-bot",
+    "go"
+  ],
+  "website": "https://github.com/vifar/twitter-bot",
+  "repository": "https://github.com/vifar/twitter-bot"
+}
