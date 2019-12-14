@@ -33,7 +33,7 @@ func main() {
 	decadeEnd := int(math.Round(float64(now.Year())/10) * 10)
 	// decadeBeginning := decadeEnd - 10
 
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(5 * time.Hour)
 	quit := make(chan struct{})
 	go func() {
 		for {
