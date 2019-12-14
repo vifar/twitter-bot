@@ -77,8 +77,8 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 	percent = int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
 
 	var status string
-	for i := 0; i <= 100; i = i + 4 {
-		if i <= percent {
+	for i := 0; i <= (100 * .8); i = i + 4 {
+		if float64(i) <= (float64(percent) * .8) {
 			status += completed
 		} else {
 			status += notCompleted
