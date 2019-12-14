@@ -359,7 +359,6 @@ func (s *Sling) ReceiveSuccess(successV interface{}) (*http.Response, error) {
 // Receive creates a new HTTP request and returns the response. Success
 // responses (2XX) are JSON decoded into the value pointed to by successV and
 // other responses are JSON decoded into the value pointed to by failureV.
-// If the status code of response is 204(no content), decoding is skipped.
 // Any error creating the request, sending it, or decoding the response is
 // returned.
 // Receive is shorthand for calling Request and Do.
@@ -374,7 +373,6 @@ func (s *Sling) Receive(successV, failureV interface{}) (*http.Response, error) 
 // Do sends an HTTP request and returns the response. Success responses (2XX)
 // are JSON decoded into the value pointed to by successV and other responses
 // are JSON decoded into the value pointed to by failureV.
-// If the status code of response is 204(no content), decoding is skipped.
 // Any error sending the request or decoding the response is returned.
 func (s *Sling) Do(req *http.Request, successV, failureV interface{}) (*http.Response, error) {
 	resp, err := s.httpClient.Do(req)
@@ -385,7 +383,7 @@ func (s *Sling) Do(req *http.Request, successV, failureV interface{}) (*http.Res
 	defer resp.Body.Close()
 
 	// Don't try to decode on 204s
-	if resp.StatusCode == http.StatusNoContent {
+	if resp.StatusCode == 204 {
 		return resp, nil
 	}
 

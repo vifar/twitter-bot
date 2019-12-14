@@ -187,7 +187,7 @@ func getCaller() *runtime.Frame {
 
 		// If the caller isn't part of this package, we're done
 		if pkg != logrusPackage {
-			return &f //nolint:scopelint
+			return &f
 		}
 	}
 
@@ -255,10 +255,11 @@ func (entry *Entry) write() {
 	serialized, err := entry.Logger.Formatter.Format(entry)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to obtain reader, %v\n", err)
-		return
-	}
-	if _, err = entry.Logger.Out.Write(serialized); err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to write to log, %v\n", err)
+	} else {
+		_, err = entry.Logger.Out.Write(serialized)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to write to log, %v\n", err)
+		}
 	}
 }
 
