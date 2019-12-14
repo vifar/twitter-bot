@@ -5,4 +5,4 @@ build:
     - go
 
 run:
-  web: twitter-bot
+  web: bin/twitter-bot
