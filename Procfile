@@ -1,3 +1,1 @@
-web: 
-	main 
-	auth
+web: bin/twitter-bot
