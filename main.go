@@ -89,7 +89,7 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 	if (now.Year() % 4) == 0 {
 		percent = int(((daysInLeapYear - (difference.Hours() / -24)) / daysInLeapYear) * 100)
 	}
-	percent = 25 //int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
+	percent = int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
 
 	log.Info("Percent: ", percent, " & Year Progress: ", yearProgress)
 
