@@ -40,7 +40,7 @@ func main() {
 
 	calcYearCompleted(time.Now().In(localTime), nextYear, client)
 
-	ticker := time.NewTicker(time.Hour)
+	ticker := time.NewTicker(10 * time.Minute)
 	quit := make(chan struct{})
 	go func() {
 		for {
