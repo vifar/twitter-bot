@@ -103,8 +103,8 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 
 		yearProgress = percent
 		var status string
-		for i := 0; i <= (100 * .55); i = i + 4 {
-			if float64(i) <= (float64(percent) * .55) {
+		for i := 0; i <= (100 * .5); i = i + 4 {
+			if float64(i) <= (float64(percent) * .5) {
 				status += completed
 			} else {
 				status += notCompleted
