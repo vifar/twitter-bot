@@ -26,14 +26,15 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{})
 	log.Info("Retrieving Keys.......")
 
+	client := auth()
+
+	log.Info("PORT: ", os.Getenv("PORT"))
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 	http.ListenAndServe(":"+port, nil)
 	log.Info("PORT: ", port)
-
-	client := auth()
 
 	// Get current Date & Time
 	localTime, _ := time.LoadLocation("UTC")
