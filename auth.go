@@ -23,7 +23,9 @@ var keystore Keystore
 
 // Authenticating with the twitter web client
 func auth() *twitter.Client {
+
 	getKeys()
+
 	config := oauth1.NewConfig(keystore.ConsumerKey, keystore.ConsumerSecret)
 	token := oauth1.NewToken(keystore.AccessToken, keystore.AccessSecret)
 	httpClient := config.Client(oauth1.NoContext, token)

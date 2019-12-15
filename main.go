@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -25,12 +24,6 @@ func main() {
 
 	log.SetFormatter(&log.TextFormatter{})
 	log.Info("Retrieving Keys.......")
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-	log.Info(http.ListenAndServe(":"+port, nil), " \nPORT: ", port)
 
 	client := auth()
 
