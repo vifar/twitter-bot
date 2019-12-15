@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,8 +22,15 @@ var yearProgress = 0
 var decadeProgress = 0
 
 func main() {
+
 	log.SetFormatter(&log.TextFormatter{})
 	log.Info("Retrieving Keys.......")
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	http.ListenAndServe(":"+port, nil)
 
 	client := auth()
 
