@@ -61,7 +61,7 @@ func main() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 	log.Println(<-ch)
 
-	port := os.Getenv("$PORT")
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
 	}
