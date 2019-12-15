@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -25,6 +26,13 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{})
 	log.Info("Retrieving Keys.......")
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	http.ListenAndServe(":"+port, nil)
+	log.Info("PORT: ", port)
+
 	client := auth()
 
 	// Get current Date & Time
@@ -37,7 +45,7 @@ func main() {
 	decadeEnd := int(math.Round(float64(now.Year())/10) * 10)
 	// decadeBeginning := decadeEnd - 10
 
-	ticker := time.NewTicker(time.Hour)
+	ticker := time.NewTicker(5 * time.Second)
 	quit := make(chan struct{})
 	go func() {
 		for {
@@ -82,7 +90,7 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 	if (now.Year() % 4) == 0 {
 		percent = int(((daysInLeapYear - (difference.Hours() / -24)) / daysInLeapYear) * 100)
 	}
-	percent = int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
+	percent = 25 //int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
 
 	log.Info("Percent: ", percent, "Year Progress: ", yearProgress)
 
