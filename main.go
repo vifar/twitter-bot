@@ -29,7 +29,7 @@ func main() {
 	// Get current Date & Time
 	localTime, _ := time.LoadLocation("UTC")
 	now := time.Now().In(localTime)
-	log.Infoln("Today is: ", localTime, " & the time is: ", now)
+	log.Infoln("The time is: ", now)
 
 	// Years to do calculations with
 	nextYear := now.Year() + 1
@@ -61,6 +61,8 @@ func sendTweet(status string, percent int, now time.Time, client *twitter.Client
 
 	status = fmt.Sprintf("%[1]d\n\n%[2]s - %[3]d%%", now.Year(), status, percent)
 
+	log.Info("Sending teweet.......")
+
 	// Send a Tweet
 	_, _, err := client.Statuses.Update(status, nil)
 	if err != nil {
@@ -71,6 +73,8 @@ func sendTweet(status string, percent int, now time.Time, client *twitter.Client
 
 func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 
+	log.Info("Calculating year completed.......")
+
 	difference := now.Sub(time.Date(nextYear, time.January, 1, 0, 0, 0, 0, time.UTC))
 
 	var percent int
@@ -79,7 +83,12 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 	}
 	percent = int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
 
+	log.Info("Percent: ", percent, "Year Progress: ", yearProgress)
+
 	if percent > yearProgress {
+
+		log.Info("Composting teweet.......")
+
 		yearProgress = percent
 		var status string
 		for i := 0; i <= (100 * .8); i = i + 4 {
