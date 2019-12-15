@@ -62,8 +62,6 @@ func main() {
 		port = "5000"
 	}
 	http.ListenAndServe(":"+port, nil)
-	// router := gin.New()
-	// router.Run(":" + port)
 
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
@@ -105,8 +103,8 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 
 		yearProgress = percent
 		var status string
-		for i := 0; i <= (100 * .8); i = i + 4 {
-			if float64(i) <= (float64(percent) * .8) {
+		for i := 0; i <= (100 * .6); i = i + 4 {
+			if float64(i) <= (float64(percent) * .6) {
 				status += completed
 			} else {
 				status += notCompleted
