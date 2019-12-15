@@ -36,7 +36,7 @@ func main() {
 	decadeEnd := int(math.Round(float64(now.Year())/10) * 10)
 	// decadeBeginning := decadeEnd - 10
 
-	ticker := time.NewTicker(5 * time.Hour)
+	ticker := time.NewTicker(time.Hour)
 	quit := make(chan struct{})
 	go func() {
 		for {
@@ -45,7 +45,7 @@ func main() {
 				calcYearCompleted(time.Now().In(localTime), nextYear, client)
 				calcDecadeCompleted(time.Now().In(localTime), decadeEnd, client)
 			case <-quit:
-				log.Info("Retrieving Keys.......")
+				log.Info("Quiting.......")
 				return
 			}
 		}
@@ -59,7 +59,7 @@ func main() {
 
 func sendTweet(status string, percent int, now time.Time, client *twitter.Client) {
 
-	status = fmt.Sprintf("Year of %[1]d\n\n%[2]s - %[3]d%%", now.Year(), status, percent)
+	status = fmt.Sprintf("%[1]d\n\n%[2]s - %[3]d%%", now.Year(), status, percent)
 
 	// Send a Tweet
 	_, _, err := client.Statuses.Update(status, nil)
