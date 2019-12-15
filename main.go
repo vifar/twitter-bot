@@ -30,7 +30,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	http.ListenAndServe(":"+port, nil)
+	log.Info(http.ListenAndServe(":"+port, nil), " \nPORT: ", port)
 
 	client := auth()
 
