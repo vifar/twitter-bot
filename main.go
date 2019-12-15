@@ -57,15 +57,17 @@ func main() {
 	}()
 	defer ticker.Stop()
 
-	ch := make(chan os.Signal)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
-	log.Println(<-ch)
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
 	}
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	http.ListenAndServe(":"+port, nil)
+	// router := gin.New()
+	// router.Run(":" + port)
+
+	ch := make(chan os.Signal)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
+	log.Println(<-ch)
 
 }
 
