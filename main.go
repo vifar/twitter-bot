@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -28,13 +27,11 @@ func main() {
 
 	client := auth()
 
-	log.Info("PORT: ", os.Getenv("PORT"))
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-	http.ListenAndServe(":"+port, nil)
-	log.Info("PORT: ", port)
+	// port := os.Getenv("PORT")
+	// if port == "" {
+	// 	port = "8080"
+	// }
+	// log.Info("PORT: ", port)
 
 	// Get current Date & Time
 	localTime, _ := time.LoadLocation("UTC")
@@ -52,6 +49,7 @@ func main() {
 		for {
 			select {
 			case <-ticker.C:
+				log.Info("Checking time passed.......")
 				calcYearCompleted(time.Now().In(localTime), nextYear, client)
 				calcDecadeCompleted(time.Now().In(localTime), decadeEnd, client)
 			case <-quit:
@@ -69,7 +67,7 @@ func main() {
 
 func sendTweet(status string, percent int, now time.Time, client *twitter.Client) {
 
-	status = fmt.Sprintf("%[1]d\n\n%[2]s - %[3]d%%", now.Year(), status, percent)
+	status = fmt.Sprintf("Year %[1]d\n\n%[2]s - %[3]d%%", now.Year(), status, percent)
 
 	log.Info("Sending teweet.......")
 
@@ -93,7 +91,7 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 	}
 	percent = 25 //int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
 
-	log.Info("Percent: ", percent, "Year Progress: ", yearProgress)
+	log.Info("Percent: ", percent, " & Year Progress: ", yearProgress)
 
 	if percent > yearProgress {
 
