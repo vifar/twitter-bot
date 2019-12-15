@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -27,12 +28,6 @@ func main() {
 
 	client := auth()
 
-	// port := os.Getenv("PORT")
-	// if port == "" {
-	// 	port = "8080"
-	// }
-	// log.Info("PORT: ", port)
-
 	// Get current Date & Time
 	localTime, _ := time.LoadLocation("UTC")
 	now := time.Now().In(localTime)
@@ -43,7 +38,9 @@ func main() {
 	decadeEnd := int(math.Round(float64(now.Year())/10) * 10)
 	// decadeBeginning := decadeEnd - 10
 
-	ticker := time.NewTicker(5 * time.Second)
+	calcYearCompleted(time.Now().In(localTime), nextYear, client)
+
+	ticker := time.NewTicker(time.Hour)
 	quit := make(chan struct{})
 	go func() {
 		for {
@@ -61,8 +58,15 @@ func main() {
 	defer ticker.Stop()
 
 	ch := make(chan os.Signal)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 	log.Println(<-ch)
+
+	port := os.Getenv("$PORT")
+	if port == "" {
+		port = "5000"
+	}
+	log.Fatal(http.ListenAndServe(":"+port, nil))
+
 }
 
 func sendTweet(status string, percent int, now time.Time, client *twitter.Client) {
