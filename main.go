@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"net/http"
@@ -63,8 +64,8 @@ func main() {
 	config := newrelic.NewConfig("yeardecadeprogress", keystore.NewRelicKey)
 	app, _ := newrelic.NewApplication(config)
 	router := mux.NewRouter()
-	router.HandleFunc("/ping", nil).Methods("GET")
-	http.HandleFunc(newrelic.WrapHandleFunc(app, "/ping", nil))
+	router.HandleFunc("/ping", getResponse).Methods("GET")
+	http.HandleFunc(newrelic.WrapHandleFunc(app, "/ping", getResponse))
 
 	// setting port for New Relic, since they require it
 	port := os.Getenv("PORT")
@@ -131,4 +132,9 @@ func calcDecadeCompleted(now time.Time, decadeEnd int, client *twitter.Client) {
 
 	// sendTweet(client)
 
+}
+
+func getResponse(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("Success")
 }
