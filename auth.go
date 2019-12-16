@@ -17,6 +17,7 @@ type Keystore struct {
 	AccessToken    string `json:"accessToken"`
 	AccessSecret   string `json:"accessSecret"`
 	WordsAPIKey    string `json:"wordsApiKey"`
+	NewRelicKey    string `json:newRelicKey`
 }
 
 var keystore Keystore
@@ -45,6 +46,7 @@ func getKeys() {
 		keystore.ConsumerSecret = os.Getenv("consumerSecret")
 		keystore.AccessToken = os.Getenv("accessToken")
 		keystore.AccessSecret = os.Getenv("accessSecret")
+		keystore.NewRelicKey = os.Getenv("newRelicKey")
 		return
 	}
 	defer jsonFile.Close()

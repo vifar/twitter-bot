@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/dghubble/go-twitter/twitter"
+	newrelic "github.com/newrelic/go-agent"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -40,7 +41,7 @@ func main() {
 
 	calcYearCompleted(time.Now().In(localTime), nextYear, client)
 
-	ticker := time.NewTicker(10 * time.Minute)
+	ticker := time.NewTicker(1 * time.Minute)
 	quit := make(chan struct{})
 	go func() {
 		for {
@@ -57,11 +58,16 @@ func main() {
 	}()
 	defer ticker.Stop()
 
+	// start new relic to prevent idling
+	config := newrelic.NewConfig("yeardecadeprogress", keystore.NewRelicKey)
+	app, _ := newrelic.NewApplication(config)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
 	}
 	http.ListenAndServe(":"+port, nil)
+	http.HandleFunc(newrelic.WrapHandleFunc(app, "/", nil))
 
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
