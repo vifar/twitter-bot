@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/dghubble/go-twitter/twitter"
+	"github.com/gorilla/mux"
 	newrelic "github.com/newrelic/go-agent"
 	log "github.com/sirupsen/logrus"
 )
@@ -58,16 +59,19 @@ func main() {
 	}()
 	defer ticker.Stop()
 
-	// start new relic to prevent idling
+	// start new relic, and setting address to ping to prevent idling
 	config := newrelic.NewConfig("yeardecadeprogress", keystore.NewRelicKey)
 	app, _ := newrelic.NewApplication(config)
+	router := mux.NewRouter()
+	router.HandleFunc("/ping", nil).Methods("GET")
+	http.HandleFunc(newrelic.WrapHandleFunc(app, "/ping", nil))
 
+	// setting port for New Relic, since they require it
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
 	}
-	http.ListenAndServe(":"+port, nil)
-	http.HandleFunc(newrelic.WrapHandleFunc(app, "/", nil))
+	http.ListenAndServe(":"+port, router)
 
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
