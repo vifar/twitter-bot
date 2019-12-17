@@ -40,7 +40,7 @@ func main() {
 	nextYear := now.Year() + 1
 	decadeEnd := int(math.Round(float64(now.Year())/10) * 10)
 
-	ticker := time.NewTicker(time.Hour)
+	ticker := time.NewTicker(30 * time.Second)
 	quit := make(chan struct{})
 	go func() {
 		for {
