@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/dghubble/go-twitter/twitter"
+	"github.com/gorilla/mux"
+	newrelic "github.com/newrelic/go-agent"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -37,19 +39,15 @@ func main() {
 	// Years to do calculations with
 	nextYear := now.Year() + 1
 	decadeEnd := int(math.Round(float64(now.Year())/10) * 10)
-	// decadeBeginning := decadeEnd - 10
 
-	calcYearCompleted(time.Now().In(localTime), nextYear, client)
-	calcDecadeCompleted(time.Now().In(localTime), decadeEnd, client)
-
-	ticker := time.NewTicker(time.Minute)
+	ticker := time.NewTicker(time.Hour)
 	quit := make(chan struct{})
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
 				log.Info("Checking time passed.......")
-				// calcYearCompleted(time.Now().In(localTime), nextYear, client)
+				calcYearCompleted(time.Now().In(localTime), nextYear, client)
 				calcDecadeCompleted(time.Now().In(localTime), decadeEnd, client)
 			case <-quit:
 				log.Info("Quiting.......")
@@ -60,26 +58,22 @@ func main() {
 	defer ticker.Stop()
 
 	// start new relic, and setting address to ping to prevent idling
-	// config := newrelic.NewConfig("yeardecadeprogress", keystore.NewRelicKey)
-	// app, _ := newrelic.NewApplication(config)
-	// router := mux.NewRouter()
-	// router.HandleFunc("/ping", getResponse).Methods("GET")
-	// http.HandleFunc(newrelic.WrapHandleFunc(app, "/ping", getResponse))
+	config := newrelic.NewConfig("yeardecadeprogress", keystore.NewRelicKey)
+	app, _ := newrelic.NewApplication(config)
+	router := mux.NewRouter()
+	router.HandleFunc("/ping", getResponse).Methods("GET")
+	http.HandleFunc(newrelic.WrapHandleFunc(app, "/ping", getResponse))
 
 	// setting port for New Relic, since they require it
-	// port := os.Getenv("PORT")
-	// if port == "" {
-	// 	port = "5000"
-	// }
-	// http.ListenAndServe(":"+port, router)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "5000"
+	}
+	http.ListenAndServe(":"+port, router)
 
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 	log.Println(<-ch)
-
-}
-
-func sendTweet(status string, percent int, now time.Time, client *twitter.Client) {
 
 }
 
@@ -142,7 +136,7 @@ func calcDecadeCompleted(now time.Time, decadeEnd int, client *twitter.Client) {
 	daysInDecade := (10-numofLeapYears)*daysInYear + (numofLeapYears * daysInLeapYear)
 	percent := int(float64(((float64(daysInDecade) - difference.Hours()/-24) / float64(daysInDecade)) * 100))
 
-	if int(percent) > decadeProgress {
+	if percent > decadeProgress {
 
 		log.Info("Composting decade progress teweet.......")
 
