@@ -17,7 +17,7 @@ import (
 )
 
 const notCompleted = "░"
-const completed = "█"
+const completed = "▓"
 const daysInYear = 365
 const daysInLeapYear = 366
 
@@ -95,15 +95,15 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 
 		yearProgress = percent
 		var status string
-		for i := 0; i <= (100 * .5); i = i + 4 {
-			if float64(i) <= (float64(percent) * .5) {
+		for i := 0; i <= 70; i = i + 5 {
+			if float64(i) <= (float64(percent) * .7) {
 				status += completed
 			} else {
 				status += notCompleted
 			}
 		}
 
-		status = fmt.Sprintf("Year of %[1]d\n\n%[2]s - %[3]d%%", now.Year(), status, percent)
+		status = fmt.Sprintf("Year of %[1]d\n\n%[2]s %[3]d%%", now.Year(), status, percent)
 
 		log.Info("Sending year progress tweet.......")
 
@@ -142,15 +142,15 @@ func calcDecadeCompleted(now time.Time, decadeEnd int, client *twitter.Client) {
 
 		decadeProgress = percent
 		var status string
-		for i := 0; i <= (100 * .5); i = i + 4 {
-			if float64(i) <= (float64(percent) * .5) {
+		for i := 0; i <= 70; i = i + 5 {
+			if float64(i) <= (float64(percent) * .7) {
 				status += completed
 			} else {
 				status += notCompleted
 			}
 		}
 
-		status = fmt.Sprintf("Decade of %[1]d\n\n%[2]s - %[3]d%%", decadeEnd-10, status, percent)
+		status = fmt.Sprintf("Decade of %[1]d\n\n%[2]s %[3]d%%", decadeEnd-10, status, percent)
 
 		log.Info("Sending year progress tweet.......")
 
