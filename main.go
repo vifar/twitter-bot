@@ -27,6 +27,8 @@ var decadeProgress = 0
 var sendYearTweet = false
 var sendDecadeTweet = false
 
+var decadeEnd = 0;
+
 func main() {
 
 	log.SetFormatter(&log.TextFormatter{})
@@ -41,7 +43,8 @@ func main() {
 
 	// Years to do calculations with
 	nextYear := now.Year() + 1
-	decadeEnd := int(math.Round(float64(now.Year())/10) * 10)
+	decadeEnd = int(math.Round(float64(now.Year())/10) * 10)+10
+	log.Info(decadeEnd)
 
 	ticker := time.NewTicker(30 * time.Second)
 	quit := make(chan struct{})
@@ -91,14 +94,14 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 		percent = int(((daysInLeapYear - (difference.Hours() / -24)) / daysInLeapYear) * 100)
 	}
 	percent = int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
-
+	
+	var status string
 	if percent > yearProgress {
 
 		log.Info("Composting year progress teweet.......")
 
 		sendYearTweet = true
 		yearProgress = percent
-		var status string
 		for i := 0; i <= 70; i = i + 5 {
 			if float64(i) <= (float64(percent) * .7) {
 				status += completed
@@ -109,22 +112,21 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 
 		status = fmt.Sprintf("Year of %[1]d\n\n%[2]s %[3]d%%", now.Year(), status, percent)
 
-		log.Info("Sending year progress tweet.......")
-
-		// Send a Tweet
-		if sendYearTweet {
-			_, _, err := client.Statuses.Update(status, nil)
-			if err != nil {
-				log.Error(err)
-			}
-		}
-
 	} else {
 		sendYearTweet = false
 	}
 
 	if yearProgress == 100 {
 		yearProgress = 0
+	}
+
+	// Send a Tweet
+	if sendYearTweet {
+		log.Info("Sending year progress tweet.......")
+		_, _, err := client.Statuses.Update(status, nil)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 
 }
@@ -145,13 +147,13 @@ func calcDecadeCompleted(now time.Time, decadeEnd int, client *twitter.Client) {
 	daysInDecade := (10-numofLeapYears)*daysInYear + (numofLeapYears * daysInLeapYear)
 	percent := int(float64(((float64(daysInDecade) - difference.Hours()/-24) / float64(daysInDecade)) * 100))
 
+	var status string
 	if percent > decadeProgress {
 
 		log.Info("Composting decade progress teweet.......")
 
 		sendDecadeTweet = true
 		decadeProgress = percent
-		var status string
 		for i := 0; i <= 70; i = i + 5 {
 			if float64(i) <= (float64(percent) * .7) {
 				status += completed
@@ -162,21 +164,22 @@ func calcDecadeCompleted(now time.Time, decadeEnd int, client *twitter.Client) {
 
 		status = fmt.Sprintf("Decade of %[1]d\n\n%[2]s %[3]d%%", decadeEnd-10, status, percent)
 
-		log.Info("Sending year progress tweet.......")
-
-		// Send a Tweet
-		if sendDecadeTweet {
-			_, _, err := client.Statuses.Update(status, nil)
-			if err != nil {
-				log.Error(err)
-			}
-		}
 	} else {
 		sendDecadeTweet = false
 	}
 
 	if decadeProgress == 100 {
 		decadeProgress = 0
+		decadeEnd += 10
+	}
+
+	// Send a Tweet
+	if sendDecadeTweet {
+		log.Info("Sending decade progress tweet.......")
+		_, _, err := client.Statuses.Update(status, nil)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 }
 
