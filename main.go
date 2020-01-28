@@ -24,6 +24,9 @@ const daysInLeapYear = 366
 var yearProgress = 0
 var decadeProgress = 0
 
+var sendYearTweet = false
+var sendDecadeTweet = false
+
 func main() {
 
 	log.SetFormatter(&log.TextFormatter{})
@@ -93,6 +96,7 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 
 		log.Info("Composting year progress teweet.......")
 
+		sendYearTweet = true
 		yearProgress = percent
 		var status string
 		for i := 0; i <= 70; i = i + 5 {
@@ -108,10 +112,15 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 		log.Info("Sending year progress tweet.......")
 
 		// Send a Tweet
-		_, _, err := client.Statuses.Update(status, nil)
-		if err != nil {
-			log.Error(err)
+		if sendYearTweet {
+			_, _, err := client.Statuses.Update(status, nil)
+			if err != nil {
+				log.Error(err)
+			}
 		}
+
+	} else {
+		sendYearTweet = false
 	}
 
 	if yearProgress == 100 {
@@ -140,6 +149,7 @@ func calcDecadeCompleted(now time.Time, decadeEnd int, client *twitter.Client) {
 
 		log.Info("Composting decade progress teweet.......")
 
+		sendDecadeTweet = true
 		decadeProgress = percent
 		var status string
 		for i := 0; i <= 70; i = i + 5 {
@@ -155,10 +165,14 @@ func calcDecadeCompleted(now time.Time, decadeEnd int, client *twitter.Client) {
 		log.Info("Sending year progress tweet.......")
 
 		// Send a Tweet
-		_, _, err := client.Statuses.Update(status, nil)
-		if err != nil {
-			log.Error(err)
+		if sendDecadeTweet {
+			_, _, err := client.Statuses.Update(status, nil)
+			if err != nil {
+				log.Error(err)
+			}
 		}
+	} else {
+		sendDecadeTweet = false
 	}
 
 	if decadeProgress == 100 {
