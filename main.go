@@ -96,7 +96,7 @@ func calcYearCompleted(now time.Time, nextYear int, client *twitter.Client) {
 	percent = int(((daysInYear - (difference.Hours() / -24)) / daysInYear) * 100)
 	
 	var status string
-	if percent > yearProgress {
+	if (percent >= yearProgress+1) {
 
 		log.Info("Composting year progress teweet.......")
 
@@ -148,7 +148,7 @@ func calcDecadeCompleted(now time.Time, decadeEnd int, client *twitter.Client) {
 	percent := int(float64(((float64(daysInDecade) - difference.Hours()/-24) / float64(daysInDecade)) * 100))
 
 	var status string
-	if percent > decadeProgress {
+	if (percent >= decadeProgress+1) {
 
 		log.Info("Composting decade progress teweet.......")
 
